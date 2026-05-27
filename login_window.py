@@ -12,7 +12,7 @@ class LoginWindow(QMainWindow):
         self.setFixedSize(400, 500) # Ukuran jendela tetap agar proporsional
         
         # Alamat API FastAPI Lokal kamu (Nanti bisa diganti URL Render kalau sudah di-deploy)
-        self.API_URL = "http://127.0.0.1:8000/api/login"
+        self.API_URL = "https://griyadataapi-uy4ur420.b4a.run/api/login"
         
         self.initUI()
         
