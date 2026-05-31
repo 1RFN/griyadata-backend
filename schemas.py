@@ -1,19 +1,28 @@
 from pydantic import BaseModel
+from typing import List
 
-# Skema untuk Jaye mengirim data Login
+# ── Auth ──────────────────────────────────────
 class LoginRequest(BaseModel):
     username: str
     password: str
     role: str
 
-# Skema untuk Jaye mengirim data Pesanan Baru (Create/POST)
+# ── Products ──────────────────────────────────
+class ProductCreate(BaseModel):
+    nama_barang: str
+    kategori: str
+    harga: float
+
+# ── Orders ────────────────────────────────────
 class OrderCreate(BaseModel):
     nama_pelanggan: str
     product_id: int
     jumlah: int
     total_harga: float
-    # Catatan: status_pesanan & metode_pembayaran tidak perlu dimasukkan
-    # karena kita sudah set otomatis ke "Pending" dan "Offline/COD" di models.py
 
 class OrderUpdate(BaseModel):
     status_pesanan: str
+
+# ── Bulk Orders (untuk import CSV/Excel) ──────
+class BulkOrderCreate(BaseModel):
+    orders: List[OrderCreate]
