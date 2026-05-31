@@ -30,16 +30,17 @@ def login_admin(request: schemas.LoginRequest, db: Session = Depends(get_db)):
     # 1. Cari user di database berdasarkan username yang diinput
     user = db.query(models.User).filter(models.User.username == request.username).first()
     
-    # 2. Validasi apakah user ditemukan dan password-nya cocok
-    if user and user.password == request.password:
+    # 2. Validasi apakah user ditemukan, password cocok, dan role sesuai
+    if user and user.password == request.password and user.role == request.role:
         return {
             "status": "success",
-            "message": "Login berhasil", 
-            "token": "token_rahasia_griyadata_123"
+            "message": f"Login berhasil sebagai {user.role}",
+            "token": "token_rahasia_griyadata_123",
+            "role": user.role
         }
     
-    # 3. Jika salah, kembalikan error status 400
-    raise HTTPException(status_code=400, detail="Username atau password salah")
+    # 3. Jika salah satu data tidak cocok, kembalikan error status 400
+    raise HTTPException(status_code=400, detail="Username, password, atau role salah!")
 
 # API untuk MENCATAT pesanan baru (Create)
 @app.post("/api/orders")

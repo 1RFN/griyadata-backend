@@ -27,4 +27,5 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    password = Column(String) # Untuk kebutuhan tugas/MVP, kita simpan string teks biasa dulu
+    password = Column(String) 
+    role = Column(String, default="Admin")
