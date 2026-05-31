@@ -5,7 +5,6 @@ from typing import List
 class LoginRequest(BaseModel):
     username: str
     password: str
-    role: str
 
 # ── Products ──────────────────────────────────
 class ProductCreate(BaseModel):

@@ -24,14 +24,15 @@ def read_root():
 @app.post("/api/login")
 def login_admin(request: schemas.LoginRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.username == request.username).first()
-    if user and user.password == request.password and user.role == request.role:
+    
+    if user and user.password == request.password:
         return {
             "status": "success",
             "message": f"Login berhasil sebagai {user.role}",
             "token": "token_rahasia_123",
-            "role": user.role
+            "role": user.role # Beritahu frontend role aslinya apa
         }
-    raise HTTPException(status_code=400, detail="Username, password, atau role salah!")
+    raise HTTPException(status_code=400, detail="Username atau password salah!")
 
 # --- PRODUCTS ---
 @app.get("/api/products")
