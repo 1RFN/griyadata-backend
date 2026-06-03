@@ -19,8 +19,8 @@ class Order(Base):
     jumlah = Column(Integer)
     total_harga = Column(Float)
     tanggal_pesanan = Column(DateTime(timezone=True), server_default=func.now())
-    status_pesanan = Column(String, default="Pending") # Pending, Completed, Cancelled
-    metode_pembayaran = Column(String, default="Offline/COD") # Menggunakan skema COD untuk MVP
+    status_pesanan = Column(String, default="Pending") 
+    metode_pembayaran = Column(String, default="Offline/COD") 
 
 class User(Base):
     __tablename__ = "users"

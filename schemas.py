@@ -1,18 +1,18 @@
 from pydantic import BaseModel
 from typing import List
 
-# ── Auth ──────────────────────────────────────
+# Auth
 class LoginRequest(BaseModel):
     username: str
     password: str
 
-# ── Products ──────────────────────────────────
+# Products
 class ProductCreate(BaseModel):
     nama_barang: str
     kategori: str
     harga: float
 
-# ── Orders ────────────────────────────────────
+# Orders 
 class OrderCreate(BaseModel):
     nama_pelanggan: str
     product_id: int
@@ -22,6 +22,6 @@ class OrderCreate(BaseModel):
 class OrderUpdate(BaseModel):
     status_pesanan: str
 
-# ── Bulk Orders (untuk import CSV/Excel) ──────
+# Bulk Orders (untuk import CSV/Excel) 
 class BulkOrderCreate(BaseModel):
     orders: List[OrderCreate]

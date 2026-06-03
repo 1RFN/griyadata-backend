@@ -11,7 +11,6 @@ app = FastAPI(
     description="API untuk Aplikasi Manajemen Penjualan Miniatur"
 )
 
-# Buat folder uploads untuk jaga-jaga
 os.makedirs("uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
@@ -30,7 +29,7 @@ def login_admin(request: schemas.LoginRequest, db: Session = Depends(get_db)):
             "status": "success",
             "message": f"Login berhasil sebagai {user.role}",
             "token": "token_rahasia_123",
-            "role": user.role # Beritahu frontend role aslinya apa
+            "role": user.role 
         }
     raise HTTPException(status_code=400, detail="Username atau password salah!")
 
