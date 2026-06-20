@@ -31,9 +31,14 @@ def login_admin(request: schemas.LoginRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(
         models.User.username == request.username).first()
     if user and user.password == request.password:
-        return {"status": "success", "message": "Login berhasil",
-                "token": "token_rahasia_griyadata_123",
-                "user_id": user.id, "username": user.username}
+        return {
+            "status": "success", 
+            "message": "Login berhasil",
+            "token": "token_rahasia_griyadata_123",
+            "user_id": user.id, 
+            "username": user.username,
+            "role": user.role 
+        }
     raise HTTPException(status_code=400, detail="Username atau password salah")
 
 
