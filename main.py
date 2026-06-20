@@ -210,6 +210,74 @@ def bulk_insert_orders(payload: schemas.BulkOrderCreate,
     return {"message": f"Bulk insert selesai. {inserted} berhasil, {skipped} dilewati.",
             "inserted": inserted, "skipped": skipped, "errors": errors[:10]}
 
+# ==========================================
+# OPERATORS (USERS)
+# ==========================================
+def _user_dict(u) -> dict:
+    return {
+        "id": u.id,
+        "name": u.name or "",
+        "username": u.username,
+        "email": u.email or "",
+        "role": u.role or "Operator",
+        "created_at": u.created_at.isoformat() if u.created_at else None
+    }
+
+@app.get("/api/operators")
+def get_all_operators(db: Session = Depends(get_db)):
+    users = db.query(models.User).order_by(models.User.id).all()
+    return {"total_data": len(users), "data": [_user_dict(u) for u in users]}
+
+@app.post("/api/operators")
+def create_operator(data: schemas.OperatorCreate, db: Session = Depends(get_db)):
+    # Cek apakah username atau email sudah dipakai
+    existing = db.query(models.User).filter(
+        (models.User.username == data.username) | 
+        (models.User.email == data.email)
+    ).first()
+    
+    if existing:
+        raise HTTPException(400, "Username atau Email sudah terdaftar!")
+
+    u = models.User(
+        name=data.name,
+        username=data.username,
+        email=data.email,
+        role=data.role,
+        password=data.password
+    )
+    db.add(u); db.commit(); db.refresh(u)
+    return {"message": "Operator berhasil ditambahkan!", "data": _user_dict(u)}
+
+@app.put("/api/operators/{op_id}")
+def update_operator(op_id: int, data: schemas.OperatorUpdate, db: Session = Depends(get_db)):
+    u = db.query(models.User).filter(models.User.id == op_id).first()
+    if not u:
+        raise HTTPException(404, "Operator tidak ditemukan")
+
+    # Update hanya data yang dikirim
+    if data.name is not None: u.name = data.name
+    if data.username is not None: u.username = data.username
+    if data.email is not None: u.email = data.email
+    if data.role is not None: u.role = data.role
+    if data.password: u.password = data.password # Hanya diubah jika form password diisi
+
+    db.commit(); db.refresh(u)
+    return {"message": f"Operator ID {op_id} diperbarui.", "data": _user_dict(u)}
+
+@app.delete("/api/operators/{op_id}")
+def delete_operator(op_id: int, db: Session = Depends(get_db)):
+    u = db.query(models.User).filter(models.User.id == op_id).first()
+    if not u:
+        raise HTTPException(404, "Operator tidak ditemukan")
+    
+    # Opsional: Mencegah penghapusan admin utama
+    if u.username.lower() == "admin":
+        raise HTTPException(403, "Akun Admin utama tidak boleh dihapus!")
+
+    db.delete(u); db.commit()
+    return {"message": f"Operator ID {op_id} berhasil dihapus."}
+
 # FILE UPLOAD
 @app.post("/api/upload")
 def upload_file(file: UploadFile = File(...)):

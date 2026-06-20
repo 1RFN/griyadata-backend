@@ -47,3 +47,17 @@ class OrderUpdate(BaseModel):
 
 class BulkOrderCreate(BaseModel):
     orders: List[OrderCreate]
+
+class OperatorCreate(BaseModel):
+    name: str
+    username: str
+    email: Optional[str] = None
+    role: str
+    password: str
+
+class OperatorUpdate(BaseModel):
+    name: Optional[str] = None
+    username: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[str] = None
+    password: Optional[str] = None
